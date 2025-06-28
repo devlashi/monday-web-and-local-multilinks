@@ -5,15 +5,16 @@ import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 //Explore more Monday React Components here: https://vibe.monday.com/
 import { getDogColumnLongTextValue, addItem, deleteItem , getItemForKey, openLink , updateDescription, updateUrl} from "./js/AppCode";
-import { Url } from "./Url";
 import { ThemeProvider, Box, Button ,IconButton, Table, TableHeader, TableBody, TableHeaderCell, TableCell 
   , TableRow, EditableText, Icon, ButtonGroup, 
   AlertBanner, AlertBannerText , AlertBannerLink, Tooltip} from "@vibe/core";
+import { UrlOpenEventStateAlers } from "./components/UrlOpenEventStateAlers";
+import { Passcode } from "./components/Passcode";
 
 
 
 // Usage of mondaySDK example, for more information visit here: https://developer.monday.com/apps/docs/introduction-to-the-sdk/
-const monday = mondaySdk();
+export const monday = mondaySdk();
 let itemId;
 let boardId;
 const  SubIcon = "calendar";
@@ -25,6 +26,7 @@ const App = () => {
   const [activeNotConnectedBanner, setNotConnectedBannerState] = useState(false);
   const [isCreatingANewLink, setNewLinkCreatingState] = useState(false);
   const [isTableLoading, setTableLoadingState] = useState(true)
+  const [openUrlRespons, setOpenUrlResponse] = useState(0);
 
 useEffect(() => {
   monday.execute("valueCreatedForUser");
@@ -33,7 +35,8 @@ useEffect(() => {
   const handleContext = async (ctx) => {
     setContext(ctx);
 
-    if (ctx?.itemId && ctx?.boardId) {
+      if (ctx?.itemId && ctx?.boardId) {
+          console.info(ctx);
       try {
         const result = await getItemForKey(monday, ctx.itemId);
         setTextData(result);
@@ -75,6 +78,7 @@ useEffect(() => {
       <ThemeProvider
         themeConfig={context?.themeConfig} systemTheme={context?.theme}
       >
+      
       <Box padding="medium">
         <Table 
           style={{width: "auto"}}
@@ -115,6 +119,7 @@ useEffect(() => {
                       type="text2"
                       value={url}
                       placeholder="Web or Local URL"
+                      autoSelectTextOnEditMode={true}
                     />
                   </TableCell>
                   <TableCell>
@@ -126,11 +131,20 @@ useEffect(() => {
                       type="text2"
                       value={linkListWithVersion.list[index][0]}
                       placeholder="ex: Google sheet, Images folder"
+                      autoSelectTextOnEditMode={true}
                     />
                   </TableCell>
                   <TableCell >
-                    <Button rightIcon={"Delete"} onClick={()=>openLink(url,setNotConnectedBannerState)} size="small" color="positive" style={{height: "30px"}} >
-                      Open URL</Button>
+                    <Button 
+                      rightIcon={"Delete"} 
+                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse)} 
+                      size="small" 
+                      color="positive" 
+                      style={{height: "30px"}}
+                      disabled={!url || url.trim() === ""}
+                    >
+                      Open URL
+                    </Button>
                     <Button onClick={()=>deleteItem(monday,context.itemId,index,linkListWithVersion,setLinkListWithVersion, setTableLoadingState)} 
                     size="small"  
                     color="negative" 
@@ -150,17 +164,21 @@ useEffect(() => {
           </TableBody>
           
         </Table>
-        <IconButton loading={isCreatingANewLink} kind="secondary" ariaLabel="Add a new link" onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} />
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:'center'}}>
+            <IconButton loading={isCreatingANewLink} kind="secondary" ariaLabel="Add a new link" onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} />
+            <Passcode openUrlResponse={openUrlRespons} setOpenUrlResponse={setOpenUrlResponse} />
+        </div>
       </Box>
       {activeNotConnectedBanner && 
         <AlertBanner backgroundColor="negative" onClose={()=>setNotConnectedBannerState(false)}>
-                      <AlertBannerText text="Connection to the desktop app failed!" />
+                      <AlertBannerText text="The Desktop app is not running!" />
           <AlertBannerLink
             href="https://monday.com"
             text="learn more"
           />
         </AlertBanner>
       }
+      <UrlOpenEventStateAlers statusNumber={openUrlRespons} setStatusNumber={setOpenUrlResponse} />
 
     </ThemeProvider>
     </div>

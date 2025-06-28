@@ -40,8 +40,10 @@ export async function getDogColumnLongTextValue(mondayClient, boardId, itemId) {
   return columnValue ? columnValue.text : null;
 }
 
-export function openLink(url,setNotConnetedBannerState){
+export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse){
   setNotConnetedBannerState(false);
+  setOpenUrlResponse(0);
+  if(url == null || url == "") return;
   if (url.startsWith("http") ) {
     window.open(url, "_blank");
     return;
@@ -49,11 +51,23 @@ export function openLink(url,setNotConnetedBannerState){
   if(url.startsWith('www.')){
     window.open("http://"+url, "_blank");
     return;
+    }
+
+  let token = localStorage.getItem('token');
+  if (token == null){
+    setOpenUrlResponse(5);
+    return;
   }
-  fetch(`http://localhost:61234/api/open/${encodeURIComponent(url)}?code=${12345}`, {
+
+  const parts = token.split("-");
+  const port = parts[parts.length - 1];
+  const code = parts.slice(0, -1).join("-"); // Everything except the last part
+
+  fetch(`http://localhost:${port}/api/open/${encodeURIComponent(url)}`, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'bearer': code
         }
     })
     .then(response => {
@@ -64,6 +78,9 @@ export function openLink(url,setNotConnetedBannerState){
     })
     .then(data => {
         console.log('Received data:', data);
+        if (data === 3) {
+            setOpenUrlResponse(3);
+        }
         // You can now use `data` as needed
     })
     .catch(error => {
@@ -151,10 +168,10 @@ export async function updateUrl(
     newList[index][1] = encodedNewValue;
 
     if (newList[index][0] === "") {
-      const base = decodeURIComponent(newList[index][1]);
-      newList[index][0] = base.length > 20
-        ? "..." + base.slice(-20)
-        : base.padStart(20, '.');
+      const url = decodeURIComponent(newList[index][1]);
+      newList[index][0] = url.length > 20
+        ? "..." + url.slice(-20)
+        : url;
     }
 
     const newVersionedList = {
@@ -181,8 +198,10 @@ export async function updateUrl(
 }
 
 export async function addItem(monday, key, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState) {
-  if(isCreatingANewLink) return;
-  setNewLinkCreatingState(true);
+    if (isCreatingANewLink) return;
+    if (versionedLinks.list.length > 500) return;
+    setNewLinkCreatingState(true);
+
   const oldValues = JSON.stringify(versionedLinks);
   try {
     if(!versionedLinks.list) versionedLinks.list = [];

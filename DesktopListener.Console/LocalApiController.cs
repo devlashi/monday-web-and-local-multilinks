@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using EmbedIO;
 using EmbedIO.Routing;
 using EmbedIO.WebApi;
+using System.Text.Json;
 
 namespace DesktopListener.CLI
 {
@@ -22,14 +23,23 @@ namespace DesktopListener.CLI
         {
             try
             {
+                var origin = HttpContext.Request.Headers["Origin"];
+                var bearer = HttpContext.Request.Headers["bearer"];
 
-                if (!string.Equals(code, LocalApiServer.UniqueCode))
+                if (string.IsNullOrEmpty(origin) || !origin.EndsWith("monday.app"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Request denied: not coming from a valid Monday context. [{DateTime.Now:G}]");
+                    Console.ResetColor();
+                    return Status.AccessDeniedForNonMondayContext.ToInt();
+                }
+
+                if (!string.Equals(bearer, LocalApiServer.UniqueCode))
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"The code saved in the Monday app is different from the local code: {LocalApiServer.UniqueCode}");
-                    Console.WriteLine("Please update the code in the Monday app.");
                     Console.ResetColor();
-                    return Status.AccessDenied.ToInt();
+                    return Status.AccessDeniedForIncorrectCode.ToInt();
                 }
 
                 path = WebUtility.UrlDecode(path);
@@ -45,12 +55,13 @@ namespace DesktopListener.CLI
                 {
                     Process.Start("open", path);
                 }
-                return Status.Ok.ToInt() ;
+                return Status.Success.ToInt();
             }
             catch (Exception ex)
             {
-                ForegroundColor = ConsoleColor.Red;
-                WriteLine(ex.Message);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
                 return Status.ServerError.ToInt();
             }
         }
@@ -58,6 +69,14 @@ namespace DesktopListener.CLI
         [Route(HttpVerbs.Get, "/version")]
         public string GetVersion()
         {
+            var origin = HttpContext.Request.Headers["Origin"];
+            if (string.IsNullOrEmpty(origin) || !origin.EndsWith("monday.app"))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Request denied: not coming from a valid Monday context. [{DateTime.Now:G}]");
+                Console.ResetColor();
+                return Status.AccessDeniedForNonMondayContext.ToString();
+            }
             return "1.0.0";
         }
     }

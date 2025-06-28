@@ -15,10 +15,27 @@ class Program
 
         using (var server = LocalApiServer.Create())
         {
+            var code = $"{LocalApiServer.UniqueCode}-{LocalApiServer.port}";
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("Listening for monday.com link clicks...");
-            Console.WriteLine("Minimize this window and enjoy your workflow!");
+            Console.WriteLine("Listening for Monday.com link clicks...");
+            Console.WriteLine();
+
+            Console.WriteLine("Use the code below in your Monday app:");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(code);
             Console.ResetColor();
+
+            TextCopy.ClipboardService.SetText(code);
+
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("The code has been copied to your clipboard.");
+
+            Console.WriteLine();
+            Console.WriteLine("You can now minimize this window and continue your workflow.");
+            Console.ResetColor();
+            Console.WriteLine();
+            Console.WriteLine();
             await server.RunAsync(); // runs until app closes
         }
     }

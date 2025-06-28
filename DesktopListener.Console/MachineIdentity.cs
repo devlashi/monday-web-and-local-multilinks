@@ -9,5 +9,6 @@ namespace DesktopListener.CLI
     public class MachineIdentity
     {
         public string? UniqueCode { get; set; }
+        public DateTime UpdatedUtc { get; set; }
     }
 }

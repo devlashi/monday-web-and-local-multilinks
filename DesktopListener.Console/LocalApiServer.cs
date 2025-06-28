@@ -42,7 +42,7 @@ namespace DesktopListener.CLI
                 {
                     string json = File.ReadAllText(filePath);
                     var config = JsonSerializer.Deserialize<MachineIdentity>(json);
-                    if (config != null && string.IsNullOrEmpty(config.UniqueCode))
+                    if (config != null && !string.IsNullOrEmpty(config.UniqueCode))
                         return config.UniqueCode!;
                 }
                 catch (Exception e)
