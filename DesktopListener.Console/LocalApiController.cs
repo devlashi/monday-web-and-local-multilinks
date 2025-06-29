@@ -44,6 +44,11 @@ namespace DesktopListener.CLI
                 }
 
                 path = WebUtility.UrlDecode(path);
+                if (path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+                {
+                    var uri = new Uri(path);
+                    path = uri.LocalPath;  // converts file:/// URL to local path
+                }
 
                 if (openParentFolder)
                 {

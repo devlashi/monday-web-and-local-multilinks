@@ -2,43 +2,15 @@ import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
 
-// export async function getDogColumnLongTextValue(mondayClient, boardId, itemId) {
+const DesktopResposeStatus = {
+  "Default": 0,
+  "Success": 1,
+  "AccessDeniedForNonMondayContext": 2,
+  "AccessDeniedForIncorrectCode": 3,
+  "ServerError": 4,
+  "CodeNotFoundInLocalStorage": 5
+}
 
-//   // Step 1: Get the column ID for "dog column"
-//   const columnsQuery = `
-//     query {
-//     boards(ids: ${boardId} ) {
-//     columns {
-//       id
-//       title
-//     }
-//     }
-//     }
-//   `;
-
-//   const columnsRes = await mondayClient.api(columnsQuery);
-  
-//   const linksColumn = columnsRes.data.boards[0].columns.find(col => col.title === "Super Links (Don't Update Manually)");
-//   if (!linksColumn) throw new Error('Column "dog column" not found');
-  
-
-//   // Step 2: Get the long text value for the item
-//   const itemQuery = `
-//         query {
-//         items(ids: [${itemId}]) {
-//             column_values {
-//             id
-//             value
-//             type
-//             text
-//             }
-//         }
-//     }
-//   `;
-//   const itemRes = await mondayClient.api(itemQuery);
-//   const columnValue = itemRes.data.items[0].column_values.find(cv => cv.id === linksColumn.id);
-//   return columnValue ? columnValue.text : null;
-// }
 
 export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openParentfolder){
   setNotConnetedBannerState(false);
@@ -54,7 +26,7 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
 
   let token = localStorage.getItem('token');
   if (token == null || token == ''){
-    setOpenUrlResponse(5);
+    setOpenUrlResponse(DesktopResposeStatus.CodeNotFoundInLocalStorage);
     return;
   }
 
@@ -78,7 +50,7 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
     .then(data => {
         console.log('Received data:', data);
         if (data === 3) {
-            setOpenUrlResponse(3);
+            setOpenUrlResponse(DesktopResposeStatus.AccessDeniedForIncorrectCode);
         }
         // You can now use `data` as needed
     })
@@ -295,4 +267,29 @@ export async function deleteItem(monday, itemId, index, versionedLinks, setVersi
   finally{
     setTableLoadingState(false);
   }
+}
+
+export async function fetchFavorites() {
+  let token = localStorage.getItem('token');
+  if (token == null || token == ''){
+    return DesktopResposeStatus.CodeNotFoundInLocalStorage;
+  }
+  
+  const parts = token.split("-");
+  const port = parts[parts.length - 1];
+  const code = parts.slice(0, -1).join("-"); // Everything except the last part
+  
+  let url = `http://localhost:${port}/api/spec-folders`;
+
+  const response = await fetch(url,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'bearer': code
+      }
+    }
+  );
+  const data = await response.json();
+  return data;
 }

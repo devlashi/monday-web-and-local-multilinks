@@ -11,6 +11,7 @@ import { ThemeProvider, Box, Button ,IconButton, Table, TableHeader, TableBody, 
 import { UrlOpenEventStateAlers } from "./components/UrlOpenEventStateAlers";
 import { Passcode } from "./components/Passcode";
 import { FileExplorer } from "./components/FileExplorer";
+import { Url } from "./components/Url";
 
 
 
@@ -82,7 +83,7 @@ useEffect(() => {
       
       <Box padding="medium">
         <Table 
-          style={{width: "auto"}}
+          style={{width: "auto", position: "relative"}}
           size="medium"
           columns={[
             {
@@ -109,75 +110,33 @@ useEffect(() => {
           </TableHeader>
           <TableBody>
             { 
-              linkListWithVersion.list?.map(([description, url],index)=>(
-                <TableRow className="cursor-pointer" key={index} >
-                  <TableCell>
-                    <EditableText
-                      onChange={(newValue) => {
-                        updateUrl(monday, context.itemId,index,linkListWithVersion,newValue,setLinkListWithVersion);
-                        // You can also do something with newValue here
-                      }}
-                      type="text2"
-                      value={url}
-                      placeholder="Web or Local URL"
-                      autoSelectTextOnEditMode={true}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <EditableText
-                      onChange={(newValue) => {
-                        updateDescription(monday, context.itemId,index,linkListWithVersion,newValue,setLinkListWithVersion);
-                        // You can also do something with newValue here
-                      }}
-                      type="text2"
-                      value={linkListWithVersion.list[index][0]}
-                      placeholder="ex: Google sheet, Images folder"
-                      autoSelectTextOnEditMode={true}
-                    />
-                  </TableCell>
-                  <TableCell >
-                    <Button 
-                      rightIcon={"Delete"} 
-                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse,true)} 
-                      size="small" 
-                      color="primary" 
-                      style={{height: "30px"}}
-                      disabled={(!url || url.trim() === "") || parseWebUrl(url).isValid }
-                    >
-                      Open Parent
-                    </Button>
-                    <Button 
-                      rightIcon={"Delete"} 
-                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse,false)} 
-                      size="small" 
-                      color="positive" 
-                      style={{height: "30px",marginLeft:"5px"}}
-                      disabled={!url || url.trim() === ""}
-                    >
-                      Open URL
-                    </Button>
-                    <Button onClick={()=>deleteItem(monday,context.itemId,index,linkListWithVersion,setLinkListWithVersion, setTableLoadingState)} 
-                    size="small"  
-                    color="negative" 
-                    style={{height: "30px",marginLeft:"30px",width:"30px"}} 
-                    >
-                      <Icon
-                         iconType="src"
-                         icon='/svgs/trash.svg'
-                      />
-                    </Button>
-                  </TableCell>
-    
-                </TableRow>
+              linkListWithVersion.list?.map(([description, url], index) => (
+                <Url
+                  key={index}
+                  url={url}
+                  description={description}
+                  index={index}
+                  monday={monday}
+                  context={context}
+                  linkListWithVersion={linkListWithVersion}
+                  setLinkListWithVersion={setLinkListWithVersion}
+                  setNotConnectedBannerState={setNotConnectedBannerState}
+                  setOpenUrlResponse={setOpenUrlResponse}
+                  setTableLoadingState={setTableLoadingState}
+                />
               ))
             }
-            
           </TableBody>
           
         </Table>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:'center'}}>
             <IconButton loading={isCreatingANewLink} kind="secondary" ariaLabel="Add a new link" onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} />
-            <Passcode openUrlResponse={openUrlRespons} setOpenUrlResponse={setOpenUrlResponse} />
+            <Tooltip 
+            content="Use the passcode displayed in your desktop app. Each user must set it individually in their browser to open local URLs. It’s unique to your device and not shared with others." 
+            position="left" 
+            showDelay={800}>
+              <Passcode openUrlResponse={openUrlRespons} setOpenUrlResponse={setOpenUrlResponse} />
+            </Tooltip>
         </div>
       </Box>
       {activeNotConnectedBanner && 
@@ -190,7 +149,6 @@ useEffect(() => {
         </AlertBanner>
       }
       <UrlOpenEventStateAlers statusNumber={openUrlRespons} setStatusNumber={setOpenUrlResponse} />
-      <FileExplorer/>
     </ThemeProvider>
     </div>
   );
