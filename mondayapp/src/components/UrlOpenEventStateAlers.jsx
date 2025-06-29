@@ -17,7 +17,7 @@ export const UrlOpenEventStateAlers = (props)=>{
             {props.statusNumber === 5 && 
                 <AlertBanner backgroundColor="negative" onClose={()=>props.setStatusNumber(0)}>
                             <AlertBannerText 
-                            text="Passcode has to be set to open local links! click on the key icon to set the passcode." />
+                            text="Passcode has to be set to open local links!" />
                 </AlertBanner>
             }
         </div>

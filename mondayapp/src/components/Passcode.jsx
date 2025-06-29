@@ -23,7 +23,7 @@ export const Passcode = (params)=>{
         setToken(newValue);
         setIsEditing(false);
         setHasError(false);
-        localStorage.setItem("token", newValue);
+        localStorage.setItem("token", newValue.trim());
     };
 
     const hideInputFiled= (isEditing)=>{

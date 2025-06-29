@@ -54,7 +54,7 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse){
     }
 
   let token = localStorage.getItem('token');
-  if (token == null){
+  if (token == null || token == ''){
     setOpenUrlResponse(5);
     return;
   }
@@ -199,7 +199,7 @@ export async function updateUrl(
 
 export async function addItem(monday, key, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState) {
     if (isCreatingANewLink) return;
-    if (versionedLinks.list.length > 500) return;
+    if (versionedLinks.list.length >= 500) return;
     setNewLinkCreatingState(true);
 
   const oldValues = JSON.stringify(versionedLinks);
