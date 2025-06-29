@@ -2,56 +2,55 @@ import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
 
-export async function getDogColumnLongTextValue(mondayClient, boardId, itemId) {
+// export async function getDogColumnLongTextValue(mondayClient, boardId, itemId) {
 
-  // Step 1: Get the column ID for "dog column"
-  const columnsQuery = `
-    query {
-    boards(ids: ${boardId} ) {
-    columns {
-      id
-      title
-    }
-    }
-    }
-  `;
+//   // Step 1: Get the column ID for "dog column"
+//   const columnsQuery = `
+//     query {
+//     boards(ids: ${boardId} ) {
+//     columns {
+//       id
+//       title
+//     }
+//     }
+//     }
+//   `;
 
-  const columnsRes = await mondayClient.api(columnsQuery);
+//   const columnsRes = await mondayClient.api(columnsQuery);
   
-  const linksColumn = columnsRes.data.boards[0].columns.find(col => col.title === "Super Links (Don't Update Manually)");
-  if (!linksColumn) throw new Error('Column "dog column" not found');
+//   const linksColumn = columnsRes.data.boards[0].columns.find(col => col.title === "Super Links (Don't Update Manually)");
+//   if (!linksColumn) throw new Error('Column "dog column" not found');
   
 
-  // Step 2: Get the long text value for the item
-  const itemQuery = `
-        query {
-        items(ids: [${itemId}]) {
-            column_values {
-            id
-            value
-            type
-            text
-            }
-        }
-    }
-  `;
-  const itemRes = await mondayClient.api(itemQuery);
-  const columnValue = itemRes.data.items[0].column_values.find(cv => cv.id === linksColumn.id);
-  return columnValue ? columnValue.text : null;
-}
+//   // Step 2: Get the long text value for the item
+//   const itemQuery = `
+//         query {
+//         items(ids: [${itemId}]) {
+//             column_values {
+//             id
+//             value
+//             type
+//             text
+//             }
+//         }
+//     }
+//   `;
+//   const itemRes = await mondayClient.api(itemQuery);
+//   const columnValue = itemRes.data.items[0].column_values.find(cv => cv.id === linksColumn.id);
+//   return columnValue ? columnValue.text : null;
+// }
 
-export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse){
+export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openParentfolder){
   setNotConnetedBannerState(false);
   setOpenUrlResponse(0);
   if(url == null || url == "") return;
-  if (url.startsWith("http") ) {
-    window.open(url, "_blank");
+
+  let urlResult = parseWebUrl(url);
+
+  if(urlResult.isValid){
+    window.open(urlResult.url, '_blank');
     return;
   }
-  if(url.startsWith('www.')){
-    window.open("http://"+url, "_blank");
-    return;
-    }
 
   let token = localStorage.getItem('token');
   if (token == null || token == ''){
@@ -63,7 +62,7 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse){
   const port = parts[parts.length - 1];
   const code = parts.slice(0, -1).join("-"); // Everything except the last part
 
-  fetch(`http://localhost:${port}/api/open/${encodeURIComponent(url)}`, {
+  fetch(`http://localhost:${port}/api/open/${encodeURIComponent(url)}?openParentFolder=${openParentfolder}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -89,24 +88,52 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse){
     });
 }
 
-export async function getItemForKey(monday,key){
+export function parseWebUrl(str) {
+  if (typeof str !== 'string') {
+    return { isValid: false, url: null };
+  }
+
+  let input = str.trim();
+
+  // If starts with www., prepend http://
+  if (input.startsWith('www.')) {
+    input = 'http://' + input;
+  }
+
+  try {
+    const url = new URL(input);
+
+    // Check if scheme is http or https
+    if (url.protocol === 'http:' || url.protocol === 'https:') {
+      return { isValid: true, url: url.href };
+    }
+    return { isValid: false, url: null };
+  } catch (e) {
+    return { isValid: false, url: null };
+  }
+}
+
+export async function getItemForKey(monday,itemId){
+  let key = `item-links-${itemId}`;
   const res = await monday.storage.getItem(key);
   console.log(res);
   return res.data;
 }
 
-export async function setItemForKey(monday, key,value ,previousVersion){
+export async function setItemForKey(monday, itemId,value ,previousVersion){
+  let key = `item-links-${itemId}`;
   await monday.storage.setItem(key,value,{previous_version:previousVersion});
 }
 
 export async function updateDescription(
   monday,
-  key,
+  itemId,
   index,
   linksListWithVersion,
   newValue,
   setLinksListWithVersion
 ) {
+
   let oldValues = JSON.stringify(linksListWithVersion);
   let description = linksListWithVersion.list[index][0];
   if (description === newValue?.trim()) return;
@@ -122,12 +149,12 @@ export async function updateDescription(
 
     await setItemForKey(
       monday,
-      key,
+      itemId,
       JSON.stringify(newList),
       linksListWithVersion.version
     );
 
-    const res = await getItemForKey(monday, key);
+    const res = await getItemForKey(monday, itemId);
     console.log("updated response", res);
 
     newVersionedList.version = res.version;
@@ -142,7 +169,7 @@ export async function updateDescription(
 
 export async function updateUrl(
   monday,
-  key,
+  itemId,
   index,
   linksListWithVersion,
   newValue,
@@ -178,15 +205,15 @@ export async function updateUrl(
       list: newList,
       version: linksListWithVersion.version,
     };
-
-    await setItemForKey(
+    
+    let updateResp = await setItemForKey(
       monday,
-      key,
+      itemId,
       JSON.stringify(newList),
       linksListWithVersion.version
     );
 
-    const res = await getItemForKey(monday, key);
+    const res = await getItemForKey(monday, itemId);
     console.log("updated response", res);
 
     newVersionedList.version = res.version;
@@ -197,9 +224,10 @@ export async function updateUrl(
   }
 }
 
-export async function addItem(monday, key, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState) {
-    if (isCreatingANewLink) return;
-    if (versionedLinks.list.length >= 500) return;
+export async function addItem(monday, itemId, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState) {
+  
+  if (isCreatingANewLink) return;
+  if (versionedLinks.list.length >= 500) return;
     setNewLinkCreatingState(true);
 
   const oldValues = JSON.stringify(versionedLinks);
@@ -214,12 +242,12 @@ export async function addItem(monday, key, versionedLinks, setVersionedLinks, is
 
     await setItemForKey(
       monday,
-      key,
+      itemId,
       JSON.stringify(newList),
       versionedLinks.version
     );
 
-    const res = await getItemForKey(monday, key);
+    const res = await getItemForKey(monday, itemId);
     console.log("Added item response", res);
 
     newVersionedList.version = res.version;
@@ -233,7 +261,7 @@ export async function addItem(monday, key, versionedLinks, setVersionedLinks, is
   }
 }
 
-export async function deleteItem(monday, key, index, versionedLinks, setVersionedLinks, setTableLoadingState) {
+export async function deleteItem(monday, itemId, index, versionedLinks, setVersionedLinks, setTableLoadingState) {
   setTableLoadingState(true);
   const oldValues = JSON.stringify(versionedLinks);
   try {
@@ -249,13 +277,13 @@ export async function deleteItem(monday, key, index, versionedLinks, setVersione
     // Persist the updated list
     await setItemForKey(
       monday,
-      key,
+      itemId,
       JSON.stringify(newList),
       versionedLinks.version
     );
 
     // Fetch the latest version info
-    const res = await getItemForKey(monday, key);
+    const res = await getItemForKey(monday, itemId);
     console.log("Deleted item response", res);
 
     newVersionedList.version = res.version;

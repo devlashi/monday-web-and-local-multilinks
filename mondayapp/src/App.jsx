@@ -4,7 +4,7 @@ import "./App.css";
 import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 //Explore more Monday React Components here: https://vibe.monday.com/
-import { getDogColumnLongTextValue, addItem, deleteItem , getItemForKey, openLink , updateDescription, updateUrl} from "./js/AppCode";
+import { addItem, deleteItem , getItemForKey, openLink , parseWebUrl, updateDescription, updateUrl} from "./js/AppCode";
 import { ThemeProvider, Box, Button ,IconButton, Table, TableHeader, TableBody, TableHeaderCell, TableCell 
   , TableRow, EditableText, Icon, ButtonGroup, 
   AlertBanner, AlertBannerText , AlertBannerLink, Tooltip} from "@vibe/core";
@@ -97,7 +97,7 @@ useEffect(() => {
             {
               id:'open-btn',
               title:"",
-              width:180
+              width:290
             }
           ]}
           dataState={{ isLoading: isTableLoading}}
@@ -138,10 +138,20 @@ useEffect(() => {
                   <TableCell >
                     <Button 
                       rightIcon={"Delete"} 
-                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse)} 
+                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse,true)} 
+                      size="small" 
+                      color="primary" 
+                      style={{height: "30px"}}
+                      disabled={(!url || url.trim() === "") || parseWebUrl(url).isValid }
+                    >
+                      Open Parent
+                    </Button>
+                    <Button 
+                      rightIcon={"Delete"} 
+                      onClick={()=>openLink(url,setNotConnectedBannerState,setOpenUrlResponse,false)} 
                       size="small" 
                       color="positive" 
-                      style={{height: "30px"}}
+                      style={{height: "30px",marginLeft:"5px"}}
                       disabled={!url || url.trim() === ""}
                     >
                       Open URL

@@ -11,6 +11,7 @@ using EmbedIO;
 using EmbedIO.Routing;
 using EmbedIO.WebApi;
 using System.Text.Json;
+using DesktopListener.CLI.Dtos;
 
 namespace DesktopListener.CLI
 {
@@ -19,7 +20,7 @@ namespace DesktopListener.CLI
 
         [Route(HttpVerbs.Get, "/open/{path}")]
 
-        public int Open(string path, [QueryField] string? code)
+        public int Open(string path, [QueryField] bool openParentFolder)
         {
             try
             {
@@ -44,16 +45,43 @@ namespace DesktopListener.CLI
 
                 path = WebUtility.UrlDecode(path);
 
-                if (OperatingSystem.IsWindows())
+                if (openParentFolder)
                 {
-                    Type shellAppType = Type.GetTypeFromProgID("Shell.Application");
-                    dynamic shell = Activator.CreateInstance(shellAppType);
-                    shell.Open(path); // This opens in a focused Explorer window
-                    WriteLine(path);
+                    if (OperatingSystem.IsWindows())
+                    {
+                        // Select file/folder in Explorer
+                        Process.Start("explorer", $"/select,\"{path}\"");
+                    }
+                    else if (OperatingSystem.IsMacOS())
+                    {
+                        // Reveal file/folder in Finder
+                        Process.Start("open", $"-R \"{path}\"");
+                    }
                 }
-                else if (OperatingSystem.IsMacOS())
+                else
                 {
-                    Process.Start("open", path);
+                    if (OperatingSystem.IsWindows())
+                    {
+                        if (File.Exists(path))
+                        {
+                            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+                        }
+                        else if (Directory.Exists(path))
+                        {
+                            Process.Start("explorer", $"\"{path}\"");
+                        }
+                    }
+                    else if (OperatingSystem.IsMacOS())
+                    {
+                        if (File.Exists(path))
+                        {
+                            Process.Start("open", $"\"{path}\"");
+                        }
+                        else if (Directory.Exists(path))
+                        {
+                            Process.Start("open", $"\"{path}\"");
+                        }
+                    }
                 }
                 return Status.Success.ToInt();
             }
@@ -103,18 +131,30 @@ namespace DesktopListener.CLI
         [Route(HttpVerbs.Post, "/open-folder")]
         public FolderDto OpenFolder([JsonData]FolderDto folderDto)
         {
-            DirectoryInfo directory = new DirectoryInfo(folderDto.Path);
-            var files= directory.GetFiles()
-                .Where(f => (f.Attributes & (FileAttributes.System)) == 0)
-                .ToArray();
-            var folders =directory.GetDirectories();
+            try
+            {
+                DirectoryInfo directory = new DirectoryInfo(folderDto.FolderPath);
+                var files = directory.GetFiles()
+                    .Where(f => (f.Attributes & (FileAttributes.System)) == 0)
+                    .ToArray();
+                var folders = directory.GetDirectories();
 
-            folderDto.AddFolders(folders);
-            folderDto.AddFiles(files);
+                folderDto.AddFolders(folders);
+                folderDto.AddFiles(files);
 
+                folderDto.PopulatePathSegments();
+                Console.WriteLine($"requested data {folderDto.FolderPath}");
+                return folderDto;
+            }
+            catch (Exception ex) {
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Error - Cannot open folder :");
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+                return new FolderDto();
+            }
             
-
-            return folderDto;
         }
     }
 }
