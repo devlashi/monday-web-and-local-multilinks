@@ -79,5 +79,42 @@ namespace DesktopListener.CLI
             }
             return "1.0.0";
         }
+
+        [Route(HttpVerbs.Get,"/spec-folders")]
+        public FolderDto GetSpecialFolders()
+        {
+            var imaginaryFolderWithSpecialFolders = new FolderDto() {
+                IsImaginaryFolder = true
+            };
+
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            var videos = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+
+            imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(desktop)!, desktop));
+            imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(documents)!, documents));
+            imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(pictures)!, pictures));
+            imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(videos)!, videos));
+
+            return imaginaryFolderWithSpecialFolders;
+        }
+
+        [Route(HttpVerbs.Post, "/open-folder")]
+        public FolderDto OpenFolder([JsonData]FolderDto folderDto)
+        {
+            DirectoryInfo directory = new DirectoryInfo(folderDto.Path);
+            var files= directory.GetFiles()
+                .Where(f => (f.Attributes & (FileAttributes.System)) == 0)
+                .ToArray();
+            var folders =directory.GetDirectories();
+
+            folderDto.AddFolders(folders);
+            folderDto.AddFiles(files);
+
+            
+
+            return folderDto;
+        }
     }
 }

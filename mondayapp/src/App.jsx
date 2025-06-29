@@ -10,6 +10,7 @@ import { ThemeProvider, Box, Button ,IconButton, Table, TableHeader, TableBody, 
   AlertBanner, AlertBannerText , AlertBannerLink, Tooltip} from "@vibe/core";
 import { UrlOpenEventStateAlers } from "./components/UrlOpenEventStateAlers";
 import { Passcode } from "./components/Passcode";
+import { FileExplorer } from "./components/FileExplorer";
 
 
 
@@ -179,7 +180,7 @@ useEffect(() => {
         </AlertBanner>
       }
       <UrlOpenEventStateAlers statusNumber={openUrlRespons} setStatusNumber={setOpenUrlResponse} />
-
+      <FileExplorer/>
     </ThemeProvider>
     </div>
   );
