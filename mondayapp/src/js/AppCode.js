@@ -2,13 +2,15 @@ import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
 
-const DesktopResposeStatus = {
+export const DesktopResposeStatus = {
   "Default": 0,
   "Success": 1,
   "AccessDeniedForNonMondayContext": 2,
   "AccessDeniedForIncorrectCode": 3,
   "ServerError": 4,
-  "CodeNotFoundInLocalStorage": 5
+  "CodeNotFoundInLocalStorage": 5,
+  "FileFolderNotFound": 6,
+  "DesktopAppNotRunning": 7
 }
 
 
@@ -49,14 +51,17 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
     })
     .then(data => {
         console.log('Received data:', data);
-        if (data === 3) {
+        if (data === DesktopResposeStatus.AccessDeniedForIncorrectCode) {
             setOpenUrlResponse(DesktopResposeStatus.AccessDeniedForIncorrectCode);
+        }else if(data === DesktopResposeStatus.FileFolderNotFound){
+            setOpenUrlResponse(DesktopResposeStatus.FileFolderNotFound);
         }
         // You can now use `data` as needed
     })
     .catch(error => {
         console.error('Fetch error:', error);
         setNotConnetedBannerState(true);
+        setOpenUrlResponse(DesktopResposeStatus.DesktopAppNotRunning);
     });
 }
 
@@ -130,6 +135,7 @@ export async function updateDescription(
     console.log("updated response", res);
 
     newVersionedList.version = res.version;
+    newVersionedList.list = JSON.parse(res.value);
     console.log("new version", newVersionedList);
     
     setLinksListWithVersion(newVersionedList);
@@ -189,6 +195,7 @@ export async function updateUrl(
     console.log("updated response", res);
 
     newVersionedList.version = res.version;
+    newVersionedList.list = JSON.parse(res.value);
     setLinksListWithVersion(newVersionedList);
   } catch (e) {
     console.log("Reverting to old values");
@@ -199,7 +206,7 @@ export async function updateUrl(
 export async function addItem(monday, itemId, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState) {
   
   if (isCreatingANewLink) return;
-  if (versionedLinks.list.length >= 500) return;
+  if (  versionedLinks?.list?.length >= 500) return;
     setNewLinkCreatingState(true);
 
   const oldValues = JSON.stringify(versionedLinks);
@@ -223,6 +230,7 @@ export async function addItem(monday, itemId, versionedLinks, setVersionedLinks,
     console.log("Added item response", res);
 
     newVersionedList.version = res.version;
+    newVersionedList.list = JSON.parse(res.value);
     setVersionedLinks(newVersionedList);
   } catch (e) {
     console.log("Reverting to old values due to error");
@@ -259,6 +267,7 @@ export async function deleteItem(monday, itemId, index, versionedLinks, setVersi
     console.log("Deleted item response", res);
 
     newVersionedList.version = res.version;
+    newVersionedList.list = JSON.parse(res.value);
     setVersionedLinks(newVersionedList);
   } catch (e) {
     console.log("Reverting to old values due to error");

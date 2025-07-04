@@ -1,5 +1,6 @@
 import { Button, EditableText, Icon, Tooltip } from "@vibe/core";
 import { useState, useEffect } from "react";
+import { DesktopResposeStatus } from "../js/AppCode";
 
 export const Passcode = (params)=>{
     const [token, setToken] = useState(null);
@@ -14,7 +15,8 @@ export const Passcode = (params)=>{
     }, []);
 
     useEffect(() => {
-        if (params.openUrlResponse === 3) {
+        if (params.openUrlResponse === DesktopResposeStatus.AccessDeniedForIncorrectCode 
+          || params.openUrlResponse === DesktopResposeStatus.CodeNotFoundInLocalStorage) {
             setHasError(true);
         }
     }, [params.openUrlResponse]);
@@ -23,7 +25,7 @@ export const Passcode = (params)=>{
         setToken(newValue);
         setIsEditing(false);
         setHasError(false);
-        localStorage.setItem("token", newValue.trim());
+        localStorage.setItem("token", newValue?.trim());
     };
 
     const hideInputFiled= (isEditing)=>{

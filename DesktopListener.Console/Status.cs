@@ -18,7 +18,8 @@ namespace DesktopListener.CLI
         AccessDeniedForNonMondayContext = 2,
         AccessDeniedForIncorrectCode = 3,
         ServerError = 4,
-        DoNotUse_CodeNotFoundInLocalStorage = 5
+        DoNotUse_CodeNotFoundInLocalStorage = 5,
+        FileFolderNotFound = 6
     }
 
     public static class Utils

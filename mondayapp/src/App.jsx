@@ -77,10 +77,10 @@ useEffect(() => {
 
   return (
     <div className="App">
+      
       <ThemeProvider
         themeConfig={context?.themeConfig} systemTheme={context?.theme}
       >
-      
       <Box padding="medium">
         <Table 
           style={{width: "auto", position: "relative"}}
@@ -139,15 +139,9 @@ useEffect(() => {
             </Tooltip>
         </div>
       </Box>
-      {activeNotConnectedBanner && 
-        <AlertBanner backgroundColor="negative" onClose={()=>setNotConnectedBannerState(false)}>
-                      <AlertBannerText text="The Desktop app is not running!" />
-          <AlertBannerLink
-            href="https://monday.com"
-            text="learn more"
-          />
-        </AlertBanner>
-      }
+      {/* {activeNotConnectedBanner && 
+        
+      } */}
       <UrlOpenEventStateAlers statusNumber={openUrlRespons} setStatusNumber={setOpenUrlResponse} />
     </ThemeProvider>
     </div>

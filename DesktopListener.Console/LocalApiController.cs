@@ -50,11 +50,22 @@ namespace DesktopListener.CLI
                     path = uri.LocalPath;  // converts file:/// URL to local path
                 }
 
+                if (!File.Exists(path) && !Directory.Exists(path))
+                {
+                    Console.WriteLine($"{path} not found!");
+                    return Status.FileFolderNotFound.ToInt();
+                }
+
+
+                if (openParentFolder)  Console.WriteLine($"Opening the parent directory of {path}");
+                else Console.WriteLine($"Opening {path}");
+
                 if (openParentFolder)
                 {
                     if (OperatingSystem.IsWindows())
                     {
                         // Select file/folder in Explorer
+                        
                         Process.Start("explorer", $"/select,\"{path}\"");
                     }
                     else if (OperatingSystem.IsMacOS())
@@ -65,6 +76,7 @@ namespace DesktopListener.CLI
                 }
                 else
                 {
+
                     if (OperatingSystem.IsWindows())
                     {
                         if (File.Exists(path))

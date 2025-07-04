@@ -12,20 +12,3 @@ body {
 .cursor-pointer{
   cursor: pointer;
 }
-
-/* Fix tooltip z-index issue with tables */
-[data-testid="tooltip"],
-[class*="tooltip"],
-.vibe-tooltip {
-  z-index: 9999 !important;
-}
-
-/* Alternative: Target Vibe tooltip specifically */
-[data-testid="tooltip"] {
-  z-index: 9999 !important;
-}
-
-/* If the above doesn't work, try this more specific selector */
-div[role="tooltip"] {
-  z-index: 9999 !important;
-}
