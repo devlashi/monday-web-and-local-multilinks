@@ -40,6 +40,7 @@ export const Url = ({
           value={url}
           placeholder="Web or Local URL"
           autoSelectTextOnEditMode={true}
+          readOnly={context.user.isViewOnly}
         />
       </TableCell>
       <TableCell>
@@ -51,6 +52,7 @@ export const Url = ({
           value={description}
           placeholder="ex: Google sheet, Images folder"
           autoSelectTextOnEditMode={true}
+          readOnly={context.user.isViewOnly}
         />
       </TableCell>
       <TableCell>
@@ -84,6 +86,7 @@ export const Url = ({
             size="small"  
             color="negative" 
             style={{height: "30px", marginLeft: "30px", width: "30px"}} 
+            disabled={context.user.isViewOnly}
           >
             <Icon
               iconType="src"

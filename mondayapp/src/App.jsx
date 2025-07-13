@@ -130,7 +130,13 @@ useEffect(() => {
           
         </Table>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:'center'}}>
-            <IconButton loading={isCreatingANewLink} kind="secondary" ariaLabel="Add a new link" onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} />
+            <IconButton 
+              loading={isCreatingANewLink} 
+              kind="secondary" 
+              ariaLabel="Add a new link" 
+              onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} 
+              disabled={context?.user?.isViewOnly}
+            />
             <Tooltip 
             content="Use the passcode displayed in your desktop app. Each user must set it individually in their browser to open local URLs. It’s unique to your device and not shared with others." 
             position="left" 
