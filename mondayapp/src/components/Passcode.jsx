@@ -42,7 +42,7 @@ export const Passcode = (params)=>{
     <>
       {(token == null || isEditing) ? (
         <EditableText 
-          placeholder="Enter your desktop app's passcode in here" 
+          placeholder="Passcode ....." 
           onChange={handleCodeChange}
           value={token}
           autoSelectTextOnEditMode={true}

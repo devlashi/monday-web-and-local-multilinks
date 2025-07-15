@@ -12,3 +12,8 @@ body {
 .cursor-pointer{
   cursor: pointer;
 }
+
+.table-header-fix {
+  position: relative !important;
+  z-index: 0;
+}

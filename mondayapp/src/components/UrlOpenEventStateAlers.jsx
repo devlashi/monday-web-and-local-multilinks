@@ -2,7 +2,7 @@ import { AlertBanner, AlertBannerText, AlertBannerLink, EditableText } from "@vi
 import { DesktopResposeStatus } from "../js/AppCode";
 export const UrlOpenEventStateAlers = (props)=>{
 
-    const webLink = "https://www.seehasoft.com/monday-apps/super-links#troubleshooting";
+    const webLink = "https://viskode.com/monday-apps/local-and-web-links#troubleshooting";
     return (
         <div>        
             {props.statusNumber === 3 && 
