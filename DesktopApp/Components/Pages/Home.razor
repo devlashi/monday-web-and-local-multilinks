@@ -1,0 +1,42 @@
+﻿@page "/"
+@inject LocalApiService ApiService
+@implements IDisposable
+
+<h3>Monday App Integration</h3>
+
+@if (passcode == null)
+{
+    <p>Initializing server...</p>
+}
+else
+{
+    <p><strong>Your code:</strong> <span style="color: green">@passcode</span></p>
+    <p>Copied to clipboard.</p>
+}
+
+@foreach (var log in Logs)
+{
+    <div class=@(log.IsWarning ? "text-danger" : "")>@log.Message</div>
+}
+
+@code {
+    private string? passcode;
+    private IReadOnlyList<LogText> Logs => LogsService.Logs;
+
+    protected override void OnInitialized()
+    {
+        passcode = ApiService.Code;
+        LogsService.OnLogAdded += UpdateLogs;
+    }
+
+    private void UpdateLogs()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        LogsService.OnLogAdded -= UpdateLogs; // prevent memory leak
+    }
+
+}

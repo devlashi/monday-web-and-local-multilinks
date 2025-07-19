@@ -12,11 +12,13 @@ using EmbedIO.Routing;
 using EmbedIO.WebApi;
 using System.Text.Json;
 using DesktopListener.CLI.Dtos;
+using System.IO;
 
 namespace DesktopListener.CLI
 {
     public class LocalApiController : WebApiController
     {
+
 
         [Route(HttpVerbs.Get, "/open/{path}")]
 
@@ -31,6 +33,7 @@ namespace DesktopListener.CLI
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Request denied: not coming from a valid Monday context. [{DateTime.Now:G}]");
+                    LogsService.Add("Request denied: not coming from a valid Monday context.", true);
                     Console.ResetColor();
                     return Status.AccessDeniedForNonMondayContext.ToInt();
                 }
@@ -39,6 +42,7 @@ namespace DesktopListener.CLI
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine($"The code saved in the Monday app is different from the local code: {LocalApiServer.UniqueCode}");
+                    LogsService.Add($"The code saved in the Monday app is different from the local code: {LocalApiServer.UniqueCode}", true);
                     Console.ResetColor();
                     return Status.AccessDeniedForIncorrectCode.ToInt();
                 }
@@ -53,12 +57,22 @@ namespace DesktopListener.CLI
                 if (!File.Exists(path) && !Directory.Exists(path))
                 {
                     Console.WriteLine($"{path} not found!");
+                    LogsService.Add($"{path} not found!", true);
                     return Status.FileFolderNotFound.ToInt();
                 }
 
 
-                if (openParentFolder)  Console.WriteLine($"Opening the parent directory of {path}");
-                else Console.WriteLine($"Opening {path}");
+                if (openParentFolder)
+                {
+                    Console.WriteLine($"Opening the parent directory of {path}");
+                    LogsService.Add($"Opening the parent directory of {path}");
+                }
+
+                else
+                {
+                    Console.WriteLine($"Opening {path}");
+                    LogsService.Add($"Opening the parent directory of {path}");
+                }
 
                 if (openParentFolder)
                 {
@@ -119,6 +133,7 @@ namespace DesktopListener.CLI
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Request denied: not coming from a valid Monday context. [{DateTime.Now:G}]");
+                LogsService.Add($"Request denied: not coming from a valid Monday context.",true);
                 Console.ResetColor();
                 return Status.AccessDeniedForNonMondayContext.ToString();
             }
@@ -161,12 +176,14 @@ namespace DesktopListener.CLI
 
                 folderDto.PopulatePathSegments();
                 Console.WriteLine($"requested data {folderDto.FolderPath}");
+                LogsService.Add($"requested data {folderDto.FolderPath}");
                 return folderDto;
             }
             catch (Exception ex) {
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Error - Cannot open folder :");
+                LogsService.Add($"Error - Cannot open folder : {ex.Message}",true);
                 Console.WriteLine(ex.Message);
                 Console.ResetColor();
                 return new FolderDto();

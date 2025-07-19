@@ -15,7 +15,8 @@ class Program
 
         using (var server = LocalApiServer.Create())
         {
-            var code = $"{LocalApiServer.UniqueCode}-{LocalApiServer.port}";
+            Console.WriteLine(Text.text);
+            var code = $"{LocalApiServer.UniqueCode}-{LocalApiServer.Port}";
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("Listening for Monday.com link clicks...");
             Console.WriteLine();
