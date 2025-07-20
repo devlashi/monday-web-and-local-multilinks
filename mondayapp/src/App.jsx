@@ -92,13 +92,14 @@ useEffect(() => {
             },
             {
               id:'description',
-              title:'description',
+              title: 'description',
+              width: 210
               
             },
             {
               id:'open-btn',
               title:"",
-              width:290
+              width:200
             }
           ]}
           dataState={{ isLoading: isTableLoading}}

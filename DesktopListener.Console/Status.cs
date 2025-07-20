@@ -20,7 +20,8 @@ namespace DesktopListener.CLI
         ServerError = 4,
         DoNotUse_CodeNotFoundInLocalStorage = 5,
         FileFolderNotFound = 6,
-        NotAuthorizedFileOrDirectory  = 7
+        DesktopAppNotRunning = 7,
+        NotAuthorizedFileOrDirectory  = 8
     }
 
     public static class Utils

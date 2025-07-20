@@ -3,21 +3,22 @@ import "@vibe/core/tokens";
 import toast from "react-hot-toast";
 
 export const DesktopResposeStatus = {
-  "Default": 0,
-  "Success": 1,
-  "AccessDeniedForNonMondayContext": 2,
-  "AccessDeniedForIncorrectCode": 3,
-  "ServerError": 4,
-  "CodeNotFoundInLocalStorage": 5,
-  "FileFolderNotFound": 6,
-  "DesktopAppNotRunning": 7
-}
+    Default: 0,
+    Success: 1,
+    AccessDeniedForNonMondayContext: 2,
+    AccessDeniedForIncorrectCode: 3,
+    ServerError: 4,
+    CodeNotFoundInLocalStorage: 5,
+    FileFolderNotFound: 6,
+    DesktopAppNotRunning: 7,
+    NotAuthorizedFileOrDirectory: 8,
+};
 
 
 export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openParentfolder){
   setNotConnetedBannerState(false);
   setOpenUrlResponse(0);
-  if(url == null || url == "") return;
+  if(url == null || url === "") return;
 
   let urlResult = parseWebUrl(url);
 
@@ -27,7 +28,7 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
   }
 
   let token = localStorage.getItem('token');
-  if (token == null || token == ''){
+  if (token == null || token === ''){
     setOpenUrlResponse(DesktopResposeStatus.CodeNotFoundInLocalStorage);
     return;
   }
@@ -51,11 +52,12 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
     })
     .then(data => {
         console.log('Received data:', data);
-        if (data === DesktopResposeStatus.AccessDeniedForIncorrectCode) {
-            setOpenUrlResponse(DesktopResposeStatus.AccessDeniedForIncorrectCode);
-        }else if(data === DesktopResposeStatus.FileFolderNotFound){
-            setOpenUrlResponse(DesktopResposeStatus.FileFolderNotFound);
-        }
+        //if (data === DesktopResposeStatus.AccessDeniedForIncorrectCode) {
+        //    setOpenUrlResponse(DesktopResposeStatus.AccessDeniedForIncorrectCode);
+        //}else if(data === DesktopResposeStatus.FileFolderNotFound){
+        //    setOpenUrlResponse(DesktopResposeStatus.FileFolderNotFound);
+        //}
+        setOpenUrlResponse(data);
         // You can now use `data` as needed
     })
     .catch(error => {

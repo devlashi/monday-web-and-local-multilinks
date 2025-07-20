@@ -21,12 +21,12 @@ export const Url = ({
   const getOpenParentTooltip = () => {
     if (isUrlEmpty) return "Enter a URL first";
     if (isWebUrl) return "Only available for local paths";
-    return "Open parent folder/directory of this URL";
+    return "Open parent folder";
   };
 
   const getOpenUrlTooltip = () => {
     if (isUrlEmpty) return "Enter a URL first";
-    return "Opens a web link in your browser, or opens a local file with its default app or folder in File Explorer.";
+      return "Open in a new tab or local files/folders in File Explorer or their default apps.";
   };
 
   return (
@@ -58,39 +58,43 @@ export const Url = ({
       <TableCell>
         <Tooltip content={getOpenParentTooltip()} showDelay={500}>
           <Button 
-            rightIcon={"Delete"} 
             onClick={() => openLink(url, setNotConnectedBannerState, setOpenUrlResponse, true)} 
             size="small" 
             color="primary" 
-            style={{height: "30px"}}
+            style={{ height: "30px", width: "50px" }} 
             disabled={isOpenParentDisabled}
           >
-            Open Parent
+                      <Icon
+                          iconType="src"
+                          icon='/svgs/folder.svg'
+                      />
           </Button>
         </Tooltip>
         <Tooltip content={getOpenUrlTooltip()} showDelay={500}>
-          <Button 
-            rightIcon={"Delete"} 
+            <Button 
             onClick={() => openLink(url, setNotConnectedBannerState, setOpenUrlResponse, false)} 
             size="small" 
-            color="positive" 
-            style={{height: "30px", marginLeft: "5px"}}
+            color="primary"
+            style={{ height: "30px", marginLeft: "10px", width: "50px" }} 
             disabled={isOpenUrlDisabled}
-          >
-            Open URL
+            >
+            <Icon
+                iconType="src"
+                icon='/svgs/open.svg'
+            />
           </Button>
         </Tooltip>
         <Tooltip content="Delete this link" position="left" showDelay={500}>
-          <Button 
+            <Button 
             onClick={() => deleteItem(monday, context.itemId, index, linkListWithVersion, setLinkListWithVersion, setTableLoadingState)} 
             size="small"  
             color="negative" 
             style={{height: "30px", marginLeft: "30px", width: "30px"}} 
             disabled={context.user.isViewOnly}
-          >
+            >
             <Icon
-              iconType="src"
-              icon='/svgs/trash.svg'
+                iconType="src"
+                icon='/svgs/trash.svg'
             />
           </Button>
         </Tooltip>

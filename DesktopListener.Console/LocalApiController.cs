@@ -41,8 +41,8 @@ namespace DesktopListener.CLI
                 if (!string.Equals(bearer, LocalApiServer.UniqueCode))
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"The code saved in the Monday app is different from the local code: {LocalApiServer.UniqueCode}");
-                    LogsService.Add($"The code saved in the Monday app is different from the local code: {LocalApiServer.UniqueCode}", true);
+                    Console.WriteLine($"The code saved in the Monday app is different from the code in desktop app. ");
+                    LogsService.Add($"The code saved in the Monday app is different from the code in desktop app.", true);
                     Console.ResetColor();
                     return Status.AccessDeniedForIncorrectCode.ToInt();
                 }
@@ -61,7 +61,7 @@ namespace DesktopListener.CLI
                     return Status.FileFolderNotFound.ToInt();
                 }
 
-                if (SecurityHelper.IsSafeToOpen(path))
+                if (!SecurityHelper.IsSafeToOpen(path, openParentFolder))
                 {
                     LogsService.Add($"{path} opening blocked.", true);
                     return Status.NotAuthorizedFileOrDirectory.ToInt();
@@ -76,7 +76,7 @@ namespace DesktopListener.CLI
                 else
                 {
                     Console.WriteLine($"Opening {path}");
-                    LogsService.Add($"Opening the parent directory of {path}");
+                    LogsService.Add($"Opening {path}");
                 }
 
                 if (openParentFolder)
