@@ -6,11 +6,11 @@ export const UrlOpenEventStateAlers = (props) => {
 
     // Map status codes to messages
     const messages = {
-        [DesktopResposeStatus.AccessDeniedForIncorrectCode]: "Please update the passcode with the code shown in the desktop app",
-        [DesktopResposeStatus.CodeNotFoundInLocalStorage]: "Passcode has to be set to open local links!",
-        [DesktopResposeStatus.FileFolderNotFound]: "File or folder not found",
-        [DesktopResposeStatus.DesktopAppNotRunning]: "The Desktop app is not running!",
-        [DesktopResposeStatus.NotAuthorizedFileOrDirectory]: "Opening this directory or file format is blocked for security reasons!",
+        [DesktopResposeStatus.AccessDeniedForIncorrectCode]: "Please update the passcode with the code shown in the desktop app.",
+        [DesktopResposeStatus.CodeNotFoundInLocalStorage]: "Passcode has to be set to open local links.",
+        [DesktopResposeStatus.FileFolderNotFound]: "File or folder not found.",
+        [DesktopResposeStatus.DesktopAppNotRunning]: "Unable to connect to the desktop application.",
+        [DesktopResposeStatus.NotAuthorizedFileOrDirectory]: "Access restricted: the desktop app cannot open this folder or file type due to security settings.",
     };
 
     const message = messages[props.statusNumber];

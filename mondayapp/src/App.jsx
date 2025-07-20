@@ -66,15 +66,6 @@ useEffect(() => {
   itemId = context?.itemId;
   boardId = context?.boardId;
   
-
-  //Some example what you can do with context, read more here: https://developer.monday.com/apps/docs/mondayget#requesting-context-and-settings-data
-  const attentionBoxText = `Hello, your user_id is: ${
-    context ? context.user.id : "still loading"
-  }.
-  Let's start building your amazing app, You can do it. The connected item ${itemId}`;
-
-  
-
   return (
     <div className="App">
       

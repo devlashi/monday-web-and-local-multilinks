@@ -1,0 +1,93 @@
+﻿@page "/access-token"
+@inject LocalApiService ApiService
+
+<PageTitle>Access token</PageTitle>
+
+<div>
+    This acess token has to be set in monday.com app for it to successfully and securly 
+    connect with this desktop application. 
+</div>
+
+<div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; max-width: 420px;">
+
+    <label style="font-weight: bold; margin-bottom: 5px;">Access Token</label>
+
+    <div style="display: flex; gap: 10px;">
+        <input type="@InputType"
+               readonly
+               value="@passcode"
+               style="flex: 1; padding: 8px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px;" />
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <button class="app-btn" @onclick="ToggleVisibility"
+                style="flex: 1; padding: 8px 12px; font-size: 14px;">
+            @((isVisible ? "Hide" : "Show"))
+        </button>
+
+        <button class="app-btn" @onclick="CopyToClipboard"
+                style="flex: 1; padding: 8px 12px; font-size: 14px;">
+            Copy
+        </button>
+
+        <button class="app-btn app-btn-danger" @onclick="RegenerateToken"
+                style="flex: 1; padding: 8px 12px; font-size: 14px;">
+            Regenerate
+        </button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(uiMessage))
+    {
+        <div style="color: green; font-size: 14px; margin-top: 5px;">
+            @uiMessage
+        </div>
+    }
+</div>
+
+@code {
+    private string? passcode;
+    private bool isVisible = false;
+    private string? uiMessage;
+
+    private string InputType => isVisible ? "text" : "password";
+
+    protected override void OnInitialized()
+    {
+        passcode = ApiService.Code;
+    }
+
+    private void ToggleVisibility()
+    {
+        isVisible = !isVisible;
+        uiMessage = null; // reset message
+    }
+
+    private async Task CopyToClipboard()
+    {
+        if (!string.IsNullOrEmpty(passcode))
+        {
+            await Clipboard.SetTextAsync(passcode);
+            uiMessage = "Passcode copied to clipboard!";
+        }
+    }
+
+    private async Task RegenerateToken()
+    {
+        uiMessage = "Regenerating...";
+        StateHasChanged();
+
+        ApiService.StopServer();
+        SecurityHelper.DeleteSecurityConfigFile();
+
+        // Start server in the background (non-blocking)
+        _ = Task.Run(() => ApiService.StartAsync());
+
+        // Wait briefly to ensure server starts and code is set
+        await Task.Delay(1500);
+
+        // Refresh the new passcode from ApiService
+        passcode = ApiService.Code;
+        uiMessage = "New passcode generated. Please set this token in the Monday app to reconnect with the desktop application.";
+        await InvokeAsync(StateHasChanged);
+    }
+}
