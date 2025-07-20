@@ -2,22 +2,28 @@
 @inject LocalApiService ApiService
 @implements IDisposable
 
-<h3>Monday App Integration</h3>
 
 @if (passcode == null)
 {
-    <p>Initializing server...</p>
+    <p>Initializing ...</p>
 }
 else
 {
-    <p><strong>Your code:</strong> <span style="color: green">@passcode</span></p>
-    <p>Copied to clipboard.</p>
+    
+    <p class="text-success">Listening to the app in monday.com ...</p>
+    <p>
+        Access token copied to clipboard. You can paste it in the monday app if needed.
+        This application must keep running in order to open files or folders through the monday app.
+        You can minimize this and continue working in monday.
+    </p> 
 }
 
 @foreach (var log in Logs)
 {
     <div class=@(log.IsWarning ? "text-danger" : "")>@log.Message</div>
 }
+
+<div id="loader" class="loader"></div>
 
 @code {
     private string? passcode;
@@ -40,3 +46,4 @@ else
     }
 
 }
+

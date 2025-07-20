@@ -28,7 +28,7 @@ namespace DesktopListener.CLI
             {
                 _logs.Add(new LogText
                 {
-                    Message = $"[{DateTime.Now:T}] {message}",
+                    Message = $"{DateTime.Now:T} - {message}",
                     IsWarning = isWarning
                 });
 

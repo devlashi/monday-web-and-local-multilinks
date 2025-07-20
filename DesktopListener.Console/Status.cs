@@ -19,7 +19,8 @@ namespace DesktopListener.CLI
         AccessDeniedForIncorrectCode = 3,
         ServerError = 4,
         DoNotUse_CodeNotFoundInLocalStorage = 5,
-        FileFolderNotFound = 6
+        FileFolderNotFound = 6,
+        NotAuthorizedFileOrDirectory  = 7
     }
 
     public static class Utils

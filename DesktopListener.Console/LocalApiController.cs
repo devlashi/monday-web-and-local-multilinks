@@ -18,7 +18,7 @@ namespace DesktopListener.CLI
 {
     public class LocalApiController : WebApiController
     {
-
+        
 
         [Route(HttpVerbs.Get, "/open/{path}")]
 
@@ -61,6 +61,11 @@ namespace DesktopListener.CLI
                     return Status.FileFolderNotFound.ToInt();
                 }
 
+                if (SecurityHelper.IsSafeToOpen(path))
+                {
+                    LogsService.Add($"{path} opening blocked.", true);
+                    return Status.NotAuthorizedFileOrDirectory.ToInt();
+                }
 
                 if (openParentFolder)
                 {
@@ -79,7 +84,6 @@ namespace DesktopListener.CLI
                     if (OperatingSystem.IsWindows())
                     {
                         // Select file/folder in Explorer
-                        
                         Process.Start("explorer", $"/select,\"{path}\"");
                     }
                     else if (OperatingSystem.IsMacOS())
@@ -140,55 +144,55 @@ namespace DesktopListener.CLI
             return "1.0.0";
         }
 
-        [Route(HttpVerbs.Get,"/spec-folders")]
-        public FolderDto GetSpecialFolders()
-        {
-            var imaginaryFolderWithSpecialFolders = new FolderDto() {
-                IsImaginaryFolder = true
-            };
+        //[Route(HttpVerbs.Get,"/spec-folders")]
+        //public FolderDto GetSpecialFolders()
+        //{
+        //    var imaginaryFolderWithSpecialFolders = new FolderDto() {
+        //        IsImaginaryFolder = true
+        //    };
 
-            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-            var videos = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+        //    var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        //    var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //    var pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+        //    var videos = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
 
-            imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(desktop)!, desktop));
-            imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(documents)!, documents));
-            imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(pictures)!, pictures));
-            imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(videos)!, videos));
+        //    imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(desktop)!, desktop));
+        //    imaginaryFolderWithSpecialFolders.Folders.Add(new FolderDto(Path.GetFileName(documents)!, documents));
+        //    imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(pictures)!, pictures));
+        //    imaginaryFolderWithSpecialFolders.Folders.Add(new (Path.GetFileName(videos)!, videos));
 
-            return imaginaryFolderWithSpecialFolders;
-        }
+        //    return imaginaryFolderWithSpecialFolders;
+        //}
 
-        [Route(HttpVerbs.Post, "/open-folder")]
-        public FolderDto OpenFolder([JsonData]FolderDto folderDto)
-        {
-            try
-            {
-                DirectoryInfo directory = new DirectoryInfo(folderDto.FolderPath);
-                var files = directory.GetFiles()
-                    .Where(f => (f.Attributes & (FileAttributes.System)) == 0)
-                    .ToArray();
-                var folders = directory.GetDirectories();
+        //[Route(HttpVerbs.Post, "/open-folder")]
+        //public FolderDto OpenFolder([JsonData]FolderDto folderDto)
+        //{
+        //    try
+        //    {
+        //        DirectoryInfo directory = new DirectoryInfo(folderDto.FolderPath);
+        //        var files = directory.GetFiles()
+        //            .Where(f => (f.Attributes & (FileAttributes.System)) == 0)
+        //            .ToArray();
+        //        var folders = directory.GetDirectories();
 
-                folderDto.AddFolders(folders);
-                folderDto.AddFiles(files);
+        //        folderDto.AddFolders(folders);
+        //        folderDto.AddFiles(files);
 
-                folderDto.PopulatePathSegments();
-                Console.WriteLine($"requested data {folderDto.FolderPath}");
-                LogsService.Add($"requested data {folderDto.FolderPath}");
-                return folderDto;
-            }
-            catch (Exception ex) {
+        //        folderDto.PopulatePathSegments();
+        //        Console.WriteLine($"requested data {folderDto.FolderPath}");
+        //        LogsService.Add($"requested data {folderDto.FolderPath}");
+        //        return folderDto;
+        //    }
+        //    catch (Exception ex) {
 
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("Error - Cannot open folder :");
-                LogsService.Add($"Error - Cannot open folder : {ex.Message}",true);
-                Console.WriteLine(ex.Message);
-                Console.ResetColor();
-                return new FolderDto();
-            }
+        //        Console.ForegroundColor = ConsoleColor.Red;
+        //        Console.Write("Error - Cannot open folder :");
+        //        LogsService.Add($"Error - Cannot open folder : {ex.Message}",true);
+        //        Console.WriteLine(ex.Message);
+        //        Console.ResetColor();
+        //        return new FolderDto();
+        //    }
             
-        }
+        //}
     }
 }

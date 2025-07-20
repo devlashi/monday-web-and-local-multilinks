@@ -1,6 +1,10 @@
 ﻿/*#if (SampleContent)*/
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    /*background-color:black;*/
+/*    color:lightgray;
+    background: #1A237E;
+    background: linear-gradient(180deg,rgba(15, 20, 79, 1) 0%, rgba(1, 1, 26, 1) 100%);*/
 }
 
 a, .btn-link {
@@ -84,5 +88,46 @@ h1:focus {
 
     .flex-column, .navbar-brand {
         padding-left: env(safe-area-inset-left);
+    }
+}
+
+
+#loader{
+    position:relative;
+    bottom:0px;
+    right:0px;
+    z-index:-1;
+    /*transform:translateX(50%) translateY(50%);*/
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 40px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #D4E7FF;
+    box-shadow: 0 0 0 0 #D4E7FF;
+    animation: l2 1.5s infinite linear;
+    position: relative;
+}
+
+    .loader:before,
+    .loader:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: 0 0 0 0 #D4E7FF;
+        animation: inherit;
+        animation-delay: -0.5s;
+    }
+
+    .loader:after {
+        animation-delay: -1s;
+    }
+
+@keyframes l2 {
+    100% {
+        box-shadow: 0 0 0 40px #0000
     }
 }

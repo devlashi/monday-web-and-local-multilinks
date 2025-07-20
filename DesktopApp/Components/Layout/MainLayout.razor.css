@@ -9,7 +9,9 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    /*background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);*/
+    background: #1A237E;
+    background: linear-gradient(180deg,rgba(15, 20, 79, 1) 0%, rgba(1, 1, 26, 1) 100%);
 }
 
 .top-row {
@@ -25,6 +27,7 @@ main {
         white-space: nowrap;
         margin-left: 1.5rem;
         text-decoration: none;
+        /*color:white;*/
     }
 
         .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
