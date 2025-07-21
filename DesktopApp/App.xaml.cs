@@ -13,7 +13,7 @@ namespace DesktopApp
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "Local & Web Links" };
+            return new Window(new MainPage()) { Title = "Viskode desktop connector for monday.com" };
         }
     }
 }
