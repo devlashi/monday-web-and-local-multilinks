@@ -1,0 +1,35 @@
+﻿@page "/about"
+
+<h5>Viskode Desktop Connector for monday.com</h5>
+<br/>
+<p>
+    The Viskode Desktop Connector is developed to streamline local file and link usage through monday.com.
+    Browsers cannot access native applications or your file explorer to open files directly.
+    This app listens to your actions on monday.com and executes the appropriate actions seamlessly.
+</p>
+
+<p>
+    <strong>Key Points:</strong>
+    <ul>
+        <li>This application only detects activity from <a href="https://viskode.com/monday-apps?d=true">our apps</a> installed on monday.com.</li>
+        <li>Opening executable files are blocked for security reasons. This includes file types like .exe, .app.</li>
+        <li>Requests to open files or folders in sensitive locations, such as system folders, are blocked.</li>
+        <li>The access token displayed in the app must be set in the monday.com app for secure communication.</li>
+        <li>The security token is unique to each machine. Every app user must set their security token within the browser.</li>
+        <li>The desktop app must keep running in the background to allow monday.com to trigger file or folder actions.</li>
+    </ul>
+</p>
+
+<p>
+    For more information, please visit our <a href="https://viskode.com/monday-apps/local-and-web-links" target="_blank">website</a>.
+</p>
+
+
+<p>
+    If you have any questions, feedback, or need support, please reach out to us at
+    <a href="mailto:support@viskode.com">support@viskode.com</a>.
+</p>
+
+@code {
+    // You can add any C# code here if needed for future enhancements
+}

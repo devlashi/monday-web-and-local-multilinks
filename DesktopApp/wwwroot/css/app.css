@@ -3,7 +3,11 @@ html, body {
     font-family: 'roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background-color: #151d25;
     color: #dddddd;
+    font-size:15px;
+
 }
+
+
 
 a, .btn-link {
     color: #006bb7;

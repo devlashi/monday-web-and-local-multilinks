@@ -17,9 +17,6 @@ namespace DesktopApp.Services
         {
             Server = LocalApiServer.Create();
             Code = $"{LocalApiServer.UniqueCode}-{LocalApiServer.Port}";
-
-            TextCopy.ClipboardService.SetText(Code);
-
             // Keep the server running in the background
             await Server.RunAsync();
         }
