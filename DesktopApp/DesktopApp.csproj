@@ -22,16 +22,15 @@
         <Nullable>enable</Nullable>
 
         <!-- Display name -->
-        <ApplicationTitle>DesktopApp</ApplicationTitle>
+        <ApplicationTitle>Viskode Desktop Connector</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.desktopapp</ApplicationId>
-
-		<!-- Add this to set the Windows icon -->
-		<!--<ApplicationIcon>Platforms\Windows\app-icon-circle.ico</ApplicationIcon>-->
+        <ApplicationId>com.viskode.desktopconnector</ApplicationId>
 
         <!-- Versions -->
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<!--anything-->
+        <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+		<!--integer-->
         <ApplicationVersion>1</ApplicationVersion>
 
         <!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
@@ -48,7 +47,6 @@
     <ItemGroup>
 		
         <!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 		
         <!-- Splash Screen -->
         <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />

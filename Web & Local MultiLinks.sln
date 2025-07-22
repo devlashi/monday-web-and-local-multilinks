@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopListener.CLI", "Desk
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "mondayapp", "MondayApp\mondayapp.esproj", "{1048A877-B73B-436C-A111-E5B998E9671A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopApp", "DesktopApp\DesktopApp.csproj", "{50C11C6C-4A4B-4A16-9B23-69253936686A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopApp", "DesktopApp\DesktopApp.csproj", "{024B2914-BAFE-4D00-AFF4-20A2DEDCA2E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,11 +25,10 @@ Global
 		{1048A877-B73B-436C-A111-E5B998E9671A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1048A877-B73B-436C-A111-E5B998E9671A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1048A877-B73B-436C-A111-E5B998E9671A}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{50C11C6C-4A4B-4A16-9B23-69253936686A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{50C11C6C-4A4B-4A16-9B23-69253936686A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{50C11C6C-4A4B-4A16-9B23-69253936686A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{50C11C6C-4A4B-4A16-9B23-69253936686A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{50C11C6C-4A4B-4A16-9B23-69253936686A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{024B2914-BAFE-4D00-AFF4-20A2DEDCA2E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{024B2914-BAFE-4D00-AFF4-20A2DEDCA2E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{024B2914-BAFE-4D00-AFF4-20A2DEDCA2E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{024B2914-BAFE-4D00-AFF4-20A2DEDCA2E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

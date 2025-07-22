@@ -38,7 +38,7 @@
 
     @if (!string.IsNullOrEmpty(uiMessage))
     {
-        <div style="color: green; font-size: 14px; margin-top: 5px;">
+        <div class="app-text-info" style="font-size: 14px; margin-top: 5px;">
             @uiMessage
         </div>
     }
@@ -87,7 +87,7 @@
 
         // Refresh the new passcode from ApiService
         passcode = ApiService.Code;
-        uiMessage = "New passcode generated. Please set this token in the Monday app to reconnect with the desktop application.";
+        uiMessage = "New passcode generated. Please set this token in the monday.com app to reconnect with the desktop application.";
         await InvokeAsync(StateHasChanged);
     }
 }

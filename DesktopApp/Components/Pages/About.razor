@@ -1,6 +1,12 @@
 ﻿@page "/about"
 
 <h5>Viskode Desktop Connector for monday.com</h5>
+
+<div>
+    <div>Version: 1.0.0</div>
+    <div>Name: @AppInfo.Name</div>
+</div>
+
 <br/>
 <p>
     The Viskode Desktop Connector is developed to streamline local file and link usage through monday.com.
@@ -15,13 +21,13 @@
         <li>Opening executable files are blocked for security reasons. This includes file types like .exe, .app.</li>
         <li>Requests to open files or folders in sensitive locations, such as system folders, are blocked.</li>
         <li>The access token displayed in the app must be set in the monday.com app for secure communication.</li>
-        <li>The security token is unique to each machine. Every app user must set their security token within the browser.</li>
+        <li>The security token is unique to each machine. Every app user must <a href="https://viskode.com/monday-apps/local-and-web-links#demo">set their security token</a>  within the browser.</li>
         <li>The desktop app must keep running in the background to allow monday.com to trigger file or folder actions.</li>
     </ul>
 </p>
 
 <p>
-    For more information, please visit our <a href="https://viskode.com/monday-apps/local-and-web-links" target="_blank">website</a>.
+    For more information, please visit our <a href="https://viskode.com/monday-apps?d=true" target="_blank">website</a>.
 </p>
 
 

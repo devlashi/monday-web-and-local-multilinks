@@ -49,6 +49,10 @@
     background-color: #b63546;
 }
 
+.app-text-info{
+    color:rgb(46, 224, 144);
+}
+
 @keyframes l2 {
     100% {
         box-shadow: 0 0 0 40px #0000
