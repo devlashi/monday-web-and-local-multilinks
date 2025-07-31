@@ -2,6 +2,8 @@ import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
 
+const monday = mondaySdk();
+
 export const DesktopResposeStatus = {
     Default: 0,
     Success: 1,
@@ -23,7 +25,8 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
   let urlResult = parseWebUrl(url);
 
   if(urlResult.isValid){
-    window.open(urlResult.url, '_blank');
+    // window.open(urlResult.url, '_blank');
+    monday.execute("openLinkInTab", { url: urlResult.url });
     return;
   }
 

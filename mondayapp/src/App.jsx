@@ -130,7 +130,7 @@ useEffect(() => {
               disabled={context?.user?.isViewOnly}
             />
             <Tooltip 
-            content="Use the passcode displayed in your desktop app. 
+            content="Use the access token displayed in your desktop app. 
             Each user must set it individually in their browser to open local URLs.
              It’s unique to your device and not shared with others.
              This is only required if you need to open local files or folders.
