@@ -132,7 +132,6 @@ const App = () => {
             {
               id:'description',
               title: 'description',
-              width: 210
               
             },
             {
