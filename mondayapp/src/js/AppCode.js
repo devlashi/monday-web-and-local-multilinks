@@ -1,6 +1,7 @@
 import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
+import { sanitize } from "../security/security";
 
 const monday = mondaySdk();
 
@@ -120,6 +121,8 @@ export async function updateDescription(
   let description = linksListWithVersion.list[index][0];
   if (description === newValue?.trim()) return;
 
+  // newValue = sanitize(newValue);
+
   try {
     const newList = [...linksListWithVersion.list];
     newList[index] = [(newValue || "").trim(), newList[index][1]];
@@ -169,9 +172,11 @@ export async function updateUrl(
   }
     
   const trimmedNewValue = (newValue || "").trim();
-  const encodedNewValue = trimmedNewValue;
+  
 
-  if (currentUrl === encodedNewValue) return;
+  if (currentUrl === trimmedNewValue) return;
+
+  const encodedNewValue = trimmedNewValue;
 
   try {
     const newList = [...linksListWithVersion.list];
@@ -237,12 +242,41 @@ export async function addItem(monday, itemId, versionedLinks, setVersionedLinks,
     newVersionedList.version = res.version;
     newVersionedList.list = JSON.parse(res.value);
     setVersionedLinks(newVersionedList);
+
   } catch (e) {
     console.log("Reverting to old values due to error");
     setVersionedLinks(JSON.parse(oldValues));
     
   }finally{
     setNewLinkCreatingState(false);
+  }
+}
+
+export async function refreshTable(monday, itemId, versionedLinks, setVersionedLinks, isCreatingANewLink ,setNewLinkCreatingState,setTableLoadingState){
+  if (isCreatingANewLink) return;
+  // setNewLinkCreatingState(true);
+  setTableLoadingState(true);
+  const oldValues = JSON.stringify(versionedLinks);
+  try {
+    if(!versionedLinks.list) versionedLinks.list = [];
+    const newList = [...versionedLinks.list, ['', '']];
+
+    const newVersionedList = {};
+
+    const res = await getItemForKey(monday, itemId);
+    console.log("Latest item response", res);
+
+    newVersionedList.version = res.version;
+    newVersionedList.list = JSON.parse(res.value);
+    setVersionedLinks(newVersionedList);
+
+  } catch (e) {
+    console.log("Reverting to old values due to error");
+    setVersionedLinks(JSON.parse(oldValues));
+    
+  }finally{
+    // setNewLinkCreatingState(false);
+    setTableLoadingState(false);
   }
 }
 

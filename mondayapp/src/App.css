@@ -6,6 +6,8 @@ body {
 .App {
   height: 100vh;
   width: auto;
+  overflow-y: scroll;
+  position: relative;
   /* padding: 10px; */
 }
 
@@ -16,4 +18,18 @@ body {
 .table-header-fix {
   position: relative !important;
   z-index: 0;
+}
+
+.table-container{
+  padding: 0 15px;
+}
+
+.menu-container{
+  position: sticky;
+  top: 0;
+  padding: 0 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: white;
+  z-index: 1;
 }
