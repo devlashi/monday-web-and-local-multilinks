@@ -87,7 +87,7 @@ const App = () => {
       <ThemeProvider
         themeConfig={context?.themeConfig} systemTheme={context?.theme}
       >
-        <div className="menu-container">
+        <Box className="menu-container" backgroundColor="primaryBackgroundColor">
             <div style={{display:"flex",justifyContent:"space-between",alignItems:'center'}}>
               <div style={{ display: "flex", gap: "8px" }}>
                 <IconButton 
@@ -119,7 +119,7 @@ const App = () => {
                 </Tooltip>
             </div>
             <UrlOpenEventStateAlers statusNumber={openUrlRespons} setStatusNumber={setOpenUrlResponse} />
-        </div>
+        </Box>
       <Box className="table-container">
         <Table 
           style={{width: "auto", position: "relative"}}

@@ -26,7 +26,7 @@ export const Url = ({
 
   const getOpenUrlTooltip = () => {
     if (isUrlEmpty) return "Enter a URL first";
-      return "Open in a new tab or local files/folders in File Explorer or their default apps.";
+      return "Opens web links in a new tab, or local files in their default apps.";
   };
 
   return (
