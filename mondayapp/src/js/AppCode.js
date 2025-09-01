@@ -69,6 +69,12 @@ export function openLink(url,setNotConnetedBannerState, setOpenUrlResponse,openP
         setNotConnetedBannerState(true);
         setOpenUrlResponse(DesktopResposeStatus.DesktopAppNotRunning);
     });
+  
+  try{
+    monday.execute('valueCreatedForUser');
+  }catch(e){
+
+  }
 }
 
 export function parseWebUrl(str) {

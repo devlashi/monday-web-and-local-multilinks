@@ -2,7 +2,7 @@ import { AlertBanner, AlertBannerText, AlertBannerLink } from "@vibe/core";
 import { DesktopResposeStatus } from "../js/AppCode";
 
 export const UrlOpenEventStateAlers = (props) => {
-    const webLink = "https://viskode.com/monday-apps/local-and-web-links#troubleshooting";
+    const webLink = "https://viskode.com/for-monday-apps/local-and-web-links#troubleshooting";
 
     // Map status codes to messages
     const messages = {
