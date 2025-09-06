@@ -1,9 +1,10 @@
 import mondaySdk from "monday-sdk-js";
 import "@vibe/core/tokens";
 import toast from "react-hot-toast";
-import { sanitize } from "../security/security";
+import { sanitizeUrlInput, sanitizeDescription } from "../security/security";
 
 const monday = mondaySdk();
+console.info("v6");
 
 export const DesktopResposeStatus = {
     Default: 0,
@@ -127,7 +128,7 @@ export async function updateDescription(
   let description = linksListWithVersion.list[index][0];
   if (description === newValue?.trim()) return;
 
-  // newValue = sanitize(newValue);
+  newValue = sanitizeDescription(newValue);
 
   try {
     const newList = [...linksListWithVersion.list];
@@ -159,6 +160,7 @@ export async function updateDescription(
   }
 }
 
+
 export async function updateUrl(
   monday,
   itemId,
@@ -170,19 +172,11 @@ export async function updateUrl(
   const oldValues = JSON.stringify(linksListWithVersion);
   const currentUrl = linksListWithVersion.list[index][1];
 
-  if (
-  (newValue?.startsWith('"') && newValue?.endsWith('"')) ||
-  (newValue?.startsWith("'") && newValue?.endsWith("'"))
-  ) {
-    newValue = newValue.slice(1, -1);
-  }
-    
-  const trimmedNewValue = (newValue || "").trim();
-  
+  const sanitizedInput = sanitizeUrlInput(newValue);
 
-  if (currentUrl === trimmedNewValue) return;
+  if (currentUrl === sanitizedInput) return;
 
-  const encodedNewValue = trimmedNewValue;
+  const encodedNewValue = sanitizedInput; 
 
   try {
     const newList = [...linksListWithVersion.list];
@@ -200,10 +194,10 @@ export async function updateUrl(
       version: linksListWithVersion.version,
     };
     
-    let updateResp = await setItemForKey(
+    await setItemForKey(
       monday,
       itemId,
-      JSON.stringify(newList),
+      JSON.stringify(newList), // json encoding
       linksListWithVersion.version
     );
 

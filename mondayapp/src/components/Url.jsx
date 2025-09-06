@@ -1,5 +1,6 @@
 import { TableCell, TableRow, EditableText, Button, Icon, Tooltip } from "@vibe/core";
 import { updateUrl, updateDescription, openLink, deleteItem, parseWebUrl } from "../js/AppCode";
+import DOMPurify from 'dompurify';
 
 export const Url = ({ 
   url, 
@@ -37,7 +38,7 @@ export const Url = ({
             updateUrl(monday, context.itemId, index, linkListWithVersion, newValue, setLinkListWithVersion);
           }}
           type="text2"
-          value={url}
+          value={DOMPurify.sanitize(url)}
           placeholder="Web or Local URL"
           autoSelectTextOnEditMode={true}
           readOnly={context.user.isViewOnly}
@@ -49,7 +50,7 @@ export const Url = ({
             updateDescription(monday, context.itemId, index, linkListWithVersion, newValue, setLinkListWithVersion);
           }}
           type="text2"
-          value={description}
+          value={DOMPurify.sanitize(description)}
           placeholder="ex: Google sheet, Images folder"
           autoSelectTextOnEditMode={true}
           readOnly={context.user.isViewOnly}
@@ -84,7 +85,9 @@ export const Url = ({
             />
           </Button>
         </Tooltip>
-        <Tooltip content="Delete this link" position="left" showDelay={500}>
+        <Tooltip 
+            content={context.user.isViewOnly ? "You need write access to delete" : "Delete this link"} 
+            position="left" showDelay={500}>
             <Button 
             onClick={() => deleteItem(monday, context.itemId, index, linkListWithVersion, setLinkListWithVersion, setTableLoadingState)} 
             size="small"  

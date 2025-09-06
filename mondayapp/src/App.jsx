@@ -94,7 +94,7 @@ const App = () => {
                   icon={Add}
                   loading={isCreatingANewLink} 
                   kind="secondary" 
-                  ariaLabel="Add a new link" 
+                  ariaLabel={context?.user?.isViewOnly ? "You need write access to add a new link" : "Add a new link"} 
                   onClick={()=>{addItem(monday,context.itemId,linkListWithVersion,setLinkListWithVersion, isCreatingANewLink ,setNewLinkCreatingState)}} 
                   disabled={context?.user?.isViewOnly}
                 />
